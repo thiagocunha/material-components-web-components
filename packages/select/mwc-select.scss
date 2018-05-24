@@ -16,3 +16,16 @@ limitations under the License.
 */
 
 @import '@material/select/mdc-select.scss';
+
+.mdc-select__native-control {
+  // Remove when autoprefixer is reenabled.
+  -webkit-appearance: none;
+}
+
+slot::slotted(select:focus) {
+  @extend .mdc-select__native-control:focus;
+}
+
+slot::slotted(select) {
+  @extend .mdc-select__native-control;
+}

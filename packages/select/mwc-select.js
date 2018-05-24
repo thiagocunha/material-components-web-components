@@ -18,9 +18,11 @@ import {LitElement, html} from '@polymer/lit-element/lit-element.js';
 import {MDCWebComponentMixin} from '@material/mwc-base/mdc-web-component.js';
 import {MDCWCMenu} from '@material/mwc-menu/mwc-menu.js';
 import {MDCSelect} from '@material/select';
+import * as MDCSelectConstants from '@material/select/constants.js';
 import {style} from './mwc-select-css.js';
-import {style as menuStyle} from '@material/mwc-menu/mwc-menu-css.js';
 import {afterNextRender} from '@material/mwc-base/utils.js';
+import {MDCFloatingLabel} from '@material/floating-label/index';
+import {MDCLineRipple} from '@material/line-ripple/index';
 
 // this element depend on the `mwc-list-item` and `mwc-list-item-separator`
 // elements to be registered ahead of time
@@ -41,8 +43,27 @@ class MDCWSelect extends MDCWebComponentMixin(MDCSelect) {
     return this.listItems;
   }
 
-  initialize(menuFactory, labelFactory) {
-    super.initialize((el) => new MDCWCMenu(el), labelFactory);
+  initialize(
+    labelFactory = el => new MDCFloatingLabel(el),
+    lineRippleFactory = el => new MDCLineRipple(el)
+  ) {
+    const host = this.root_.getRootNode().host;
+    this.nativeControl_ = host.querySelector("select");
+    const labelElement = this.root_.querySelector(MDCSelectConstants.strings.LABEL_SELECTOR);
+
+    if (labelElement) {
+      this.label_ = labelFactory(labelElement);
+    }
+
+    const lineRippleElement = this.root_.querySelector(MDCSelectConstants.strings.LINE_RIPPLE_SELECTOR);
+
+    if (lineRippleElement) {
+      this.lineRipple_ = lineRippleFactory(lineRippleElement);
+    }
+
+    if (this.root_.classList.contains(MDCSelectConstants.cssClasses.BOX)) {
+      this.ripple = this.initRipple_();
+    }
   }
 
   get selectedOptions() {
@@ -77,18 +98,11 @@ export class Select extends LitElement {
           flex: 1;
         }
       </style>
-      ${menuStyle}${style}
+      ${style}
       <div class$="mdc-select ${box ? 'mdc-select--box' : ''}" role="listbox" aria-disabled$="${disabled}">
-        <div class="mdc-select__surface" tabindex="0">
-          <div class="mdc-select__label">${label}</div>
-          <div class="mdc-select__selected-text"></div>
-          <div class="mdc-select__bottom-line"></div>
-        </div>
-        <div class="mdc-menu mdc-select__menu">
-          <div class="mdc-list mdc-menu__items">
-            <slot></slot>
-          </div>
-        </div>
+        <slot></slot>
+        <div class="mdc-floating-label">${label}</div>
+        <div class="mdc-line-ripple"></div>
       </div>`;
   }
 
@@ -117,11 +131,11 @@ export class Select extends LitElement {
   }
 
   get selectedIndex() {
-    return this._mdcComponent.selectedIndex();
+    return this._mdcComponent.selectedIndex;
   }
 
   set selectedIndex(selectedIndex) {
-    this._mdcComponent.setSelectedIndex(selectedIndex);
+    this._mdcComponent.selectedIndex = selectedIndex;
   }
 
   item(index) {
