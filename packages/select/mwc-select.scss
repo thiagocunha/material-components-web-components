@@ -15,17 +15,73 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-@import '@material/select/mdc-select.scss';
+@import '@material/floating-label/mixins';
+@import '@material/line-ripple/mixins';
+@import '@material/theme/mixins';
+@import '@material/select/mdc-select';
+@import '@material/select/_variables';
 
 .mdc-select__native-control {
   // Remove when autoprefixer is reenabled.
   -webkit-appearance: none;
 }
 
-slot::slotted(select:focus) {
+::slotted(select) {
+  @extend .mdc-select__native-control;
+}
+
+::slotted(select:focus) {
   @extend .mdc-select__native-control:focus;
 }
 
-slot::slotted(select) {
-  @extend .mdc-select__native-control;
+
+@mixin mcw__mdc-select-focused-label-color($color) {
+  &:not(.mdc-select--disabled) {
+    .mdc-floating-label {
+      @include mdc-floating-label-ink-color(mdc-theme-prop-value($color));
+    }
+  }
+}
+
+@mixin mcw__mdc-select-focused-line-ripple_ {
+  .mdc-line-ripple {
+    @content;
+  }
+}
+
+@mixin mcw__mdc-select-focused-line-ripple-color_($color) {
+  @include mcw__mdc-select-focused-line-ripple_ {
+    @include mdc-line-ripple-color($color);
+  }
+}
+
+@mixin mcw__mdc-select-focused-bottom-line-color($color) {
+  &:not(.mdc-select--disabled) {
+    @include mcw__mdc-select-focused-line-ripple-color_($color);
+  }
+}
+
+@mixin mcw__mdc-select-ink-color($color) {
+  &:not(.mdc-select--disabled) {
+    @include mcw__mdc-select-ink-color_($color);
+  }
+}
+
+@mixin mcw__mdc-select-ink-color_($color) {
+  ::slotted(select) {
+    @include mdc-theme-prop(color, $color);
+  }
+}
+
+.mdc-select {
+  @include mcw__mdc-select-ink-color($mdc-select-ink-color);
+}
+
+:host(._focused) .mdc-select {
+  @include mcw__mdc-select-focused-bottom-line-color(primary);
+  @include mcw__mdc-select-focused-label-color($mdc-select-focused-label-color);
+}
+
+:host(:hover) .mdc-select {
+  @include mcw__mdc-select-hover-bottom-color($mdc-select-);
 }

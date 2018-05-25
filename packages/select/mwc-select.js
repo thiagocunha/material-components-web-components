@@ -85,6 +85,13 @@ export class Select extends LitElement {
     this.label = '';
     this.disabled = false;
     this.box = false;
+
+    this.addEventListener('focus', (e) => {
+      this.classList.add('_focused');
+    }, true);
+    this.addEventListener('blur', (e) => {
+      this.classList.remove('_focused');
+    }, true);
   }
 
   // TODO(sorvell) #css: flex for sizing
