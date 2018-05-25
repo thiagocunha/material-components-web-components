@@ -21,30 +21,76 @@ limitations under the License.
 @import '@material/select/mdc-select';
 @import '@material/select/_variables';
 
-.mdc-select__native-control {
-  // Remove when autoprefixer is reenabled.
-  -webkit-appearance: none;
-}
 
-::slotted(select) {
-  @extend .mdc-select__native-control;
-}
+// Any rule selecting `.mdc-select__native-control` now also selects the
+// <select> in this host's normal children.
+//
+// NOTE: The element selected by `::slotted(select)` is in a different tree, so
+// complex selectors with combinators to the right of
+// `.mdc-select__native-control` will produce rules that can never match an
+// element. These are covered later.
+//
+// NOTE: Shady DOM only supports using `::slotted()` as part of a trailing
+// compound selector in a complex selector.
 
-::slotted(select:focus) {
-  @extend .mdc-select__native-control:focus;
-}
+// `:host` is required for Shadow DOM.
+// `.mdc-select` is required for Shady DOM.
+:host, .mdc-select {
+  ::slotted(select:focus) {
+    @extend .mdc-select__native-control:focus;
+  }
 
+  ::slotted(select:hover) {
+    @extend .mdc-select__native-control:hover;
+  }
 
-@mixin mcw__mdc-select-focused-label-color($color) {
-  &:not(.mdc-select--disabled) {
-    .mdc-floating-label {
-      @include mdc-floating-label-ink-color(mdc-theme-prop-value($color));
-    }
+  ::slotted(select) {
+    @extend .mdc-select__native-control;
+
+    // TODO: Remove when autoprefixer is reenabled.
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 }
 
+
+// Rewrite selectors using combinators to the right of
+// `.mdc-select__native-control`. Selectors that use
+// `.mdc-select__native-control:focus` and combinators to the right are
+// rewritten to `:host(._focus) & #{$RIGHT}` where `$RIGHT` is the complex
+// selector to the right of the first combinator following
+// `.mdc-select__native-control:focus`.
+//
+// These would be slightly more similar to their originals if they were
+// converted to `:host(._focus & slot #{$RIGHT}`, with `$RIGHT` being the full
+// relative selector (including leading combinator) to right of the
+// `.mdc-select__native-control:focus` but Shady DOM emulates slots by replacing
+// them with their assigned nodes (recursively), so no slot will exist to match.
+//
+// Example:
+//
+//   ```
+//   A {
+//     .mdc-select__native-control:focus ~ B { ... }
+//   }
+//   ```
+//
+//   becomes
+//
+//   ```
+//   A {
+//     :host(._focus) & B { ... }
+//   }
+//   ```
+//
+// NOTE: These mixins are arranged with definitions preceding uses; otherwise,
+// Sass is occasionally unable to find them.
+
 @mixin mcw__mdc-select-focused-line-ripple_ {
-  .mdc-line-ripple {
+  // https://github.com/material-components/material-components-web/blob/f6055ea91867fbac622c0efad7b40f8dd8e04292/packages/mdc-select/_mixins.scss#L69
+  // .mdc-select__native-control:focus ~ .mdc-line-ripple
+  :host(._focused) & .mdc-line-ripple {
     @content;
   }
 }
@@ -61,27 +107,17 @@ limitations under the License.
   }
 }
 
-@mixin mcw__mdc-select-ink-color($color) {
+@mixin mcw__mdc-select-focused-label-color($color) {
   &:not(.mdc-select--disabled) {
-    @include mcw__mdc-select-ink-color_($color);
-  }
-}
-
-@mixin mcw__mdc-select-ink-color_($color) {
-  ::slotted(select) {
-    @include mdc-theme-prop(color, $color);
+    // https://github.com/material-components/material-components-web/blob/f6055ea91867fbac622c0efad7b40f8dd8e04292/packages/mdc-select/_mixins.scss#L37
+    // .mdc-select__native-control:focus ~ .mdc-floating-label
+    :host(._focused) & .mdc-floating-label {
+      @include mdc-floating-label-ink-color(mdc-theme-prop-value($color));
+    }
   }
 }
 
 .mdc-select {
-  @include mcw__mdc-select-ink-color($mdc-select-ink-color);
-}
-
-:host(._focused) .mdc-select {
   @include mcw__mdc-select-focused-bottom-line-color(primary);
   @include mcw__mdc-select-focused-label-color($mdc-select-focused-label-color);
-}
-
-:host(:hover) .mdc-select {
-  @include mcw__mdc-select-hover-bottom-color($mdc-select-);
 }
