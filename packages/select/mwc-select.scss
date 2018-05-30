@@ -87,7 +87,7 @@ limitations under the License.
 // NOTE: These mixins are arranged with definitions preceding uses; otherwise,
 // Sass is occasionally unable to find them.
 
-@mixin mcw__mdc-select-focused-line-ripple_ {
+@mixin mwc__mdc-select-focused-line-ripple_ {
   // https://github.com/material-components/material-components-web/blob/f6055ea91867fbac622c0efad7b40f8dd8e04292/packages/mdc-select/_mixins.scss#L69
   // .mdc-select__native-control:focus ~ .mdc-line-ripple
   :host(._focused) & .mdc-line-ripple {
@@ -95,19 +95,19 @@ limitations under the License.
   }
 }
 
-@mixin mcw__mdc-select-focused-line-ripple-color_($color) {
-  @include mcw__mdc-select-focused-line-ripple_ {
+@mixin mwc__mdc-select-focused-line-ripple-color_($color) {
+  @include mwc__mdc-select-focused-line-ripple_ {
     @include mdc-line-ripple-color($color);
   }
 }
 
-@mixin mcw__mdc-select-focused-bottom-line-color($color) {
+@mixin mwc__mdc-select-focused-bottom-line-color($color) {
   &:not(.mdc-select--disabled) {
-    @include mcw__mdc-select-focused-line-ripple-color_($color);
+    @include mwc__mdc-select-focused-line-ripple-color_($color);
   }
 }
 
-@mixin mcw__mdc-select-focused-label-color($color) {
+@mixin mwc__mdc-select-focused-label-color($color) {
   &:not(.mdc-select--disabled) {
     // https://github.com/material-components/material-components-web/blob/f6055ea91867fbac622c0efad7b40f8dd8e04292/packages/mdc-select/_mixins.scss#L37
     // .mdc-select__native-control:focus ~ .mdc-floating-label
@@ -118,6 +118,6 @@ limitations under the License.
 }
 
 .mdc-select {
-  @include mcw__mdc-select-focused-bottom-line-color(primary);
-  @include mcw__mdc-select-focused-label-color($mdc-select-focused-label-color);
+  @include mwc__mdc-select-focused-bottom-line-color(primary);
+  @include mwc__mdc-select-focused-label-color($mdc-select-focused-label-color);
 }
