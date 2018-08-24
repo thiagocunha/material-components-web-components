@@ -26,8 +26,8 @@ export class Switch extends LitElement {
   @property({type: Boolean})
   disabled = false;
 
+  _root: HTMLElement | null = null;
   private _input: HTMLInputElement | null = null;
-  private _root: HTMLElement | null = null;
   private _foundation: MDCSwitchFoundation | null = null;
 
   renderStyle() {
@@ -40,8 +40,8 @@ export class Switch extends LitElement {
 
   private _initRipple() {
     const {RIPPLE_SURFACE_SELECTOR} = MDCSwitchFoundation.strings;
-    const rippleSurface = /** @type {!Element} */ (this.shadowRoot!.querySelector(RIPPLE_SURFACE_SELECTOR));
-    return attachRipple(this, {unbounded: true}, this._root!, rippleSurface, this._input!);
+    const rippleSurface: HTMLElement = this.shadowRoot!.querySelector(RIPPLE_SURFACE_SELECTOR);
+    return attachRipple(this, rippleSurface, this._input!);
   }
 
   render() {

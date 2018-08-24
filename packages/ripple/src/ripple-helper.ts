@@ -24,11 +24,10 @@ const supportsCssVariables = util.supportsCssVariables(window);
 
 type Handler = EventListenerOrEventListenerObject;
 
-export function attachRipple(instance: LitElement, options: any = {}, rootNode?: HTMLElement, rippleSurface?: HTMLElement, interactionNode?: HTMLElement) {
+export function attachRipple(instance: LitElement & RippleCapableComponent, rippleSurface?: HTMLElement, interactionNode?: HTMLElement) {
 
-  if (!rootNode) {
-    rootNode = instance;
-  }
+  const rootNode = instance._root;
+
   if (!rippleSurface) {
     rippleSurface = rootNode;
   }
@@ -38,9 +37,9 @@ export function attachRipple(instance: LitElement, options: any = {}, rootNode?:
 
   const adapter = {
     browserSupportsCssVars: () => supportsCssVariables,
-    isUnbounded: () => options.unbounded === undefined ? true : options.unbounded,
+    isUnbounded: () => instance.unbounded === undefined ? true : instance.unbounded,
     isSurfaceActive: () => interactionNode[MATCHES](':active'),
-    isSurfaceDisabled: () => (instance as any).disabled,
+    isSurfaceDisabled: () => instance.disabled,
     addClass: (className: string) => rippleSurface.classList.add(className),
     removeClass: (className: string) => rippleSurface.classList.remove(className),
     containsEventTarget: (target: HTMLElement) => rootNode.contains(target),
@@ -58,4 +57,10 @@ export function attachRipple(instance: LitElement, options: any = {}, rootNode?:
   };
   const foundation = new MDCRippleFoundation(adapter);
   return new MDCRipple(rootNode, foundation);
+}
+
+export interface RippleCapableComponent {
+  _root: HTMLElement;
+  unbounded?: boolean;
+  disabled?: boolean;
 }
