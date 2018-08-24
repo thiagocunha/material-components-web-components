@@ -8,7 +8,8 @@
     "url": "https://github.com/material-components/material-components-web-components.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -19,5 +20,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "typescript": "^3.0.1"
   }
 }
