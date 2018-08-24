@@ -60,7 +60,7 @@ export class Fab extends LitElement {
     });
     return html`
       ${this.renderStyle()}
-      <button class$="mdc-fab ${hostClasses}" disabled?="${disabled}" aria-label$="${label || icon}">
+      <button class="mdc-fab ${hostClasses}" ?disabled="${disabled}" aria-label="${label || icon}">
         ${icon ? html`<span class="material-icons mdc-fab__icon">${icon}</span>` : ''}
       </button>`;
   }

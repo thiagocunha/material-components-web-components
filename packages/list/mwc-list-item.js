@@ -45,7 +45,7 @@ export class ListItem extends LitElement {
     //renderAttributes(this, {'aria-disabled': disabled ? 'true' : null});
     return html`
       ${this.renderStyle()}
-      <div class="mdc-list-item" role="menuitem" tabindex="0" aria-disabled$="${disabled}">
+      <div class="mdc-list-item" role="menuitem" tabindex="0" aria-disabled="${disabled}">
         ${icon ? html`<span class="material-icons">${icon}</span>` : ''}
         ${label || ''}
         <slot></slot>

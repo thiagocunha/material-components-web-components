@@ -61,7 +61,7 @@ export class ChipSet extends ComponentElement {
     // TODO(sorvell) #css: added display
     return html`
       ${this.renderStyle()}
-      <div class$="mdc-chip-set ${hostClasses}"><slot></slot></div>`;
+      <div class="mdc-chip-set ${hostClasses}"><slot></slot></div>`;
   }
 
   firstRendered() {

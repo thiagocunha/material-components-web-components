@@ -78,9 +78,9 @@ export class Slider extends FormableComponentElement {
     });
     return html`
       ${this.renderStyle()}
-      <div class$="mdc-slider ${hostClasses}" tabindex="0" role="slider"
-        aria-valuemin$="${min}" aria-valuemax$="${max}" aria-valuenow$="${value}"
-        aria-disabled$="${disabled}" data-step$="${step}">
+      <div class="mdc-slider ${hostClasses}" tabindex="0" role="slider"
+        aria-valuemin="${min}" aria-valuemax="${max}" aria-valuenow="${value}"
+        aria-disabled="${disabled}" data-step="${step}">
       <div class="mdc-slider__track-container">
         <div class="mdc-slider__track"></div>
         ${discrete && markers ? html`<div class="mdc-slider__track-marker-container"></div>` : ''}

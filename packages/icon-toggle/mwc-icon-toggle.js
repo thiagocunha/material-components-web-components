@@ -71,13 +71,13 @@ export class IconToggle extends ComponentElement {
     offIcon = offIcon || icon;
     return html`
       ${this.renderStyle()}
-      <span class$="mdc-icon-toggle material-icons ${disabled ? 'mdc-icon-toggle--disabled' : ''}"
+      <span class="mdc-icon-toggle material-icons ${disabled ? 'mdc-icon-toggle--disabled' : ''}"
             role="button"
-            aria-disabled$="${disabled}"
+            aria-disabled="${disabled}"
             tabindex="0"
-            data-toggle-on$='{"label": "${label}", "content": "${icon}"}'
-            data-toggle-off$='{"label": "${offLabel}", "content": "${offIcon}"}'
-            on-MDCIconToggle:change="${this._boundChangeHandler}">
+            data-toggle-on='{"label": "${label}", "content": "${icon}"}'
+            data-toggle-off='{"label": "${offLabel}", "content": "${offIcon}"}'
+            @MDCIconToggle:change="${this._boundChangeHandler}">
       </span>`;
   }
 

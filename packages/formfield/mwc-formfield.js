@@ -56,9 +56,9 @@ export class Formfield extends ComponentElement {
   render() {
     const {label, alignEnd, _labelClickHandler} = this;
     return html`${this.renderStyle()}
-      <div class$="mdc-form-field ${alignEnd ? 'mdc-form-field--align-end' : ''}">
+      <div class="mdc-form-field ${alignEnd ? 'mdc-form-field--align-end' : ''}">
         <slot></slot>
-        <label class="mdc-label" on-click="${_labelClickHandler}">${label}</label>
+        <label class="mdc-label" @click="${_labelClickHandler}">${label}</label>
       </div>`;
   }
 

@@ -73,9 +73,9 @@ export class Radio extends FormableComponentElement {
       <div class="mdc-radio">
         <input class="mdc-radio__native-control" type="radio"
           checked="${checked}" name="${name}" value="${value}"
-          on-change="${this._boundInputChangeHandler}"
-          on-focus="${this._boundInputFocusHandler}"
-          on-blur="${this._boundInputBlurHandler}">
+          @change="${this._boundInputChangeHandler}"
+          @focus="${this._boundInputFocusHandler}"
+          @blur="${this._boundInputBlurHandler}">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>

@@ -79,7 +79,7 @@ export class Select extends LitElement {
         }
       </style>
       ${menuStyle}${style}
-      <div class$="mdc-select ${box ? 'mdc-select--box' : ''}" role="listbox" aria-disabled$="${disabled}">
+      <div class="mdc-select ${box ? 'mdc-select--box' : ''}" role="listbox" aria-disabled="${disabled}">
         <div class="mdc-select__surface" tabindex="0">
           <div class="mdc-select__label">${label}</div>
           <div class="mdc-select__selected-text"></div>

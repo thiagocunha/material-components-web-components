@@ -85,10 +85,10 @@ export class Textfield extends ComponentElement {
     });
     return html`
       ${this.renderStyle()}
-      <div class$="mdc-text-field mdc-text-field--upgraded ${hostClasses}">
+      <div class="mdc-text-field mdc-text-field--upgraded ${hostClasses}">
         ${!fullWidth && icon ? html`<i class="material-icons mdc-text-field__icon" tabindex="0">${icon}</i>` : ''}
         ${this._renderInput({value, required, type, placeHolder, label})}
-        ${!fullWidth && label ? html`<label class$="mdc-floating-label ${value ? 'mdc-floating-label--float-above' : ''}" for="text-field">${label}</label>` : ''}
+        ${!fullWidth && label ? html`<label class="mdc-floating-label ${value ? 'mdc-floating-label--float-above' : ''}" for="text-field">${label}</label>` : ''}
         ${!fullWidth && outlined ? html`<div class="mdc-notched-outline">
             <svg><path class="mdc-notched-outline__path"/></svg>
           </div>
@@ -99,7 +99,7 @@ export class Textfield extends ComponentElement {
   }
 
   _renderInput({value, required, type, placeHolder, label}) {
-    return html`<input type="text" type$="${type}" placeholder$="${placeHolder}" required?="${required}" class$="mdc-text-field__input ${value ? 'mdc-text-field--upgraded' : ''}" id="text-field" value="${value}" aria-label$="${label}">`;
+    return html`<input type="text" type="${type}" placeholder="${placeHolder}" ?required="${required}" class="mdc-text-field__input ${value ? 'mdc-text-field--upgraded' : ''}" id="text-field" value="${value}" aria-label="${label}">`;
   }
 
   firstRendered() {

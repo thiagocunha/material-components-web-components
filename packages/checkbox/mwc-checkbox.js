@@ -67,7 +67,7 @@ export class Checkbox extends FormableComponentElement {
         <input type="checkbox"
           class="mdc-checkbox__native-control"
           checked="${checked}" value="${value}"
-          on-change="${this._boundInputChangeHandler}">
+          @change="${this._boundInputChangeHandler}">
         <div class="mdc-checkbox__background">
           <svg class="mdc-checkbox__checkmark"
               viewBox="0 0 24 24">

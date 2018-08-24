@@ -62,8 +62,8 @@ export class Chip extends ComponentElement {
     // TODO(sorvell) #css: added display
     return html`
       ${this.renderStyle()}
-      <div class$="mdc-chip ${this.active ? 'mdc-chip--activated' : ''}"
-        on-MDCChip:interaction="${this._boundInteractionHandler}">
+      <div class="mdc-chip ${this.active ? 'mdc-chip--activated' : ''}"
+        @MDCChip:interaction="${this._boundInteractionHandler}">
         ${leadingIconPart}
         <div class="mdc-chip__text">${label}</div>
         ${trailingIconPart}

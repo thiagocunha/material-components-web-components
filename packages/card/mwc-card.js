@@ -36,7 +36,7 @@ export class Card extends LitElement {
   render() {
     return html`
       ${this.renderStyle()}
-      <div class$="mdc-card ${this.stroke ? 'mdc-card--stroked' : ''}">
+      <div class="mdc-card ${this.stroke ? 'mdc-card--stroked' : ''}">
         <slot></slot>
       </div>`;
   }

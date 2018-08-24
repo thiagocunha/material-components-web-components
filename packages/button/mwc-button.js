@@ -67,7 +67,7 @@ export class Button extends LitElement {
     });
     return html`
       ${this.renderStyle()}
-      <button class$="mdc-button ${hostClasses}" disabled?="${disabled}">
+      <button class="mdc-button ${hostClasses}" ?disabled="${disabled}">
         ${icon ? html`<span class="material-icons mdc-button__icon">${icon}</span>` : ''}
         ${label || ''}
         <slot></slot>

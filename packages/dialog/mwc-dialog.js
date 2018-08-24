@@ -91,7 +91,7 @@ export class Dialog extends ComponentElement {
             <h2 id="my-mdc-dialog-label" class="mdc-dialog__header__title">${headerLabel}</h2>
             <slot name="header"></slot>
           </header>
-          <section id="my-mdc-dialog-description" class$="mdc-dialog__body ${scrollable ? 'mdc-dialog__body--scrollable' : ''}">
+          <section id="my-mdc-dialog-description" class="mdc-dialog__body ${scrollable ? 'mdc-dialog__body--scrollable' : ''}">
             <slot></slot>
           </section>
           <footer class="mdc-dialog__footer">
