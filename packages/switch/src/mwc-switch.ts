@@ -17,7 +17,7 @@ limitations under the License.
 import {LitElement, html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
 import MDCSwitchFoundation from '@material/switch/foundation.js';
 import {style} from './mwc-switch-css.js';
-import {attachRipple} from './ripple-helper.js';
+import {attachRipple} from '@material/mwc-ripple/ripple-helper.js';
 
 export class Switch extends LitElement {
   @property({type: Boolean})
