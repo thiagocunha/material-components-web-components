@@ -18,7 +18,7 @@ import {LitElement, html, property} from '@polymer/lit-element/lit-element.js';
 import {findAssignedNode} from '@material/mwc-base/utils.js';
 import {FormElement} from '@material/mwc-base/formable-element.js';
 import {style} from './mwc-formfield-css.js';
-import {MDCFormField} from '@material/form-field';
+import {MDCFormFieldFoundation} from '@material/form-field';
 
 export class Formfield extends LitElement {
 
@@ -27,7 +27,9 @@ export class Formfield extends LitElement {
   @property({type: Boolean})
   alignEnd  = false;
 
-  renderStyle() {
+  private _foundation: MDCFormFieldFoundation|undefined;
+
+  protected renderStyle() {
     return style;
   }
 
@@ -38,6 +40,24 @@ export class Formfield extends LitElement {
         <slot></slot>
         <label @click="${() => this._labelClickHandler()}">${label}</label>
       </div>`;
+  }
+
+  firstRendered() {
+    const label = this.shadowRoot.querySelector('label');
+    this._foundation = new MDCFormFieldFoundation({
+      registerInteractionHandler: (type, handler) => label.addEventListener(type, handler),
+      deregisterInteractionHandler: (type, handler) => label.removeEventListener(type, handler),
+      activateInputRipple: () => {
+        if (this._input && this._input.ripple) {
+          this._input.ripple.activate();
+        }
+      },
+      deactivateInputRipple: () => {
+        if (this._input && this._input.ripple) {
+          this._input.ripple.deactivate();
+        }
+      },
+    });
   }
 
   update(changedProperties) {
@@ -53,14 +73,14 @@ export class Formfield extends LitElement {
     }
   }
 
-  _labelClickHandler() {
+  private _labelClickHandler() {
     if (this._input) {
       this._input.focus();
       this._input.click();
     }
   }
 
-  get _input() {
+  private get _input() {
     return this.__input = this.__input ||
       findAssignedNode(this.shadowRoot.querySelector('slot'), '*');
   }
