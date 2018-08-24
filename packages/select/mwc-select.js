@@ -53,9 +53,9 @@ class MDCWSelect extends MDCWebComponentMixin(MDCSelect) {
 export class Select extends LitElement {
   static get properties() {
     return {
-      label: String,
-      disabled: Boolean,
-      box: Boolean,
+      label: {type: String},
+      disabled: {type: Boolean},
+      box: {type: Boolean},
     };
   }
 
@@ -67,7 +67,8 @@ export class Select extends LitElement {
   }
 
   // TODO(sorvell) #css: flex for sizing
-  _render({label, disabled, box}) {
+  render() {
+    const {label, disabled, box} = this;
     return html`
       <style>
         :host {
@@ -92,14 +93,13 @@ export class Select extends LitElement {
       </div>`;
   }
 
-  async ready() {
-    super.ready();
+  async firstRendered() {
     await afterNextRender();
     this._makeComponent();
   }
 
   _makeComponent() {
-    const root = this._root.querySelector('.mdc-select');
+    const root = this.shadowRoot.querySelector('.mdc-select');
     this._mdcComponent = new MDCWSelect(root);
   }
 

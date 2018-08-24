@@ -31,11 +31,11 @@ export class LinearProgress extends ComponentElement {
 
   static get properties() {
     return {
-      determinate: Boolean,
-      progress: Number,
-      buffer: Number,
-      reverse: Boolean,
-      closed: Boolean,
+      determinate: {type: Boolean},
+      progress: {type: Number},
+      buffer: {type: Number},
+      reverse: {type: Boolean},
+      closed: {type: Boolean},
     };
   }
 
@@ -49,13 +49,13 @@ export class LinearProgress extends ComponentElement {
     this.closed = false;
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render() {
+  render() {
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div role="progressbar" class="mdc-linear-progress">
         <div class="mdc-linear-progress__buffering-dots"></div>
         <div class="mdc-linear-progress__buffer"></div>
@@ -68,24 +68,24 @@ export class LinearProgress extends ComponentElement {
       </div>`;
   }
 
-  async _didRender(props, changed, old) {
-    if ('determinate' in changed) {
+  async update(changedProperties) {
+    if (changedProperties.has('determinate')) {
       await this.componentReady();
       this._component.determinate = props.determinate;
     }
-    if ('progress' in changed) {
+    if (changedProperties.has('progress')) {
       await this.componentReady();
       this._component.progress = props.progress;
     }
-    if ('buffer' in changed) {
+    if (changedProperties.has('buffer')) {
       await this.componentReady();
       this._component.buffer = props.buffer;
     }
-    if ('reverse' in changed) {
+    if (changedProperties.has('reverse')) {
       await this.componentReady();
       this._component.reverse = props.reverse;
     }
-    if ('closed' in changed) {
+    if (changedProperties.has('closed')) {
       if (props.closed) {
         this.close();
       } else {

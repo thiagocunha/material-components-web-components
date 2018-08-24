@@ -32,13 +32,13 @@ export class Slider extends FormableComponentElement {
 
   static get properties() {
     return {
-      disabled: Boolean,
-      step: Number,
-      min: Number,
-      max: Number,
-      value: Number,
-      discrete: Boolean,
-      markers: Boolean,
+      disabled: {type: Boolean},
+      step: {type: Number},
+      min: {type: Number},
+      max: {type: Number},
+      value: {type: Number},
+      discrete: {type: Boolean},
+      markers: {type: Boolean},
     };
   }
 
@@ -65,18 +65,19 @@ export class Slider extends FormableComponentElement {
     });
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
   // TODO(sorvell) #css: needs a default width
-  _render({disabled, step, min, max, value, discrete, markers}) {
+  render() {
+    const {disabled, step, min, max, value, discrete, markers} = this;
     const hostClasses = c$({
       'mdc-slider--discrete': discrete,
       'mdc-slider--display-markers': markers && discrete,
     });
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class$="mdc-slider ${hostClasses}" tabindex="0" role="slider"
         aria-valuemin$="${min}" aria-valuemax$="${max}" aria-valuenow$="${value}"
         aria-disabled$="${disabled}" data-step$="${step}">

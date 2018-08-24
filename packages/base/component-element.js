@@ -33,8 +33,8 @@ export class ComponentElement extends LitElement {
     this._asyncComponent = false;
   }
 
-  async ready() {
-    super.ready();
+  async firstRendered() {
+    super.firstRendered();
     if (this._asyncComponent) {
       await afterNextRender();
     }
@@ -42,7 +42,7 @@ export class ComponentElement extends LitElement {
   }
 
   _makeComponent() {
-    this._componentRoot = this._root.querySelector(this.constructor.componentSelector);
+    this._componentRoot = this.shadowRoot.querySelector(this.constructor.componentSelector);
     this._component = new (this.constructor.ComponentClass)(this._componentRoot);
     if (this._resolveComponentPromise) {
       this._resolveComponentPromise(this._component);

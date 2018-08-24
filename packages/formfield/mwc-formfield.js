@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import {ComponentElement, html, MDCWebComponentMixin} from '@material/mwc-base/component-element.js';
-import {callWhenReady, findAssignedNode, afterNextRender} from '@material/mwc-base/utils.js';
-import {classString as c$} from '@polymer/lit-element/lit-element.js';
+import {callWhenReady, findAssignedNode,} from '@material/mwc-base/utils.js';
+import {classString} from '@polymer/lit-element/render-helpers.js';
 import {style} from './mwc-formfield-css.js';
 import {MDCFormField} from '@material/form-field';
 
@@ -34,8 +34,8 @@ export class Formfield extends ComponentElement {
 
   static get properties() {
     return {
-      label: String,
-      alignEnd: Boolean,
+      label: {type: String},
+      alignEnd: {type: Boolean},
     };
   }
 
@@ -49,20 +49,22 @@ export class Formfield extends ComponentElement {
     });
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render({label, alignEnd, _labelClickHandler}) {
-    return html`${this._renderStyle()}
+  render() {
+    const {label, alignEnd, _labelClickHandler} = this;
+    return html`${this.renderStyle()}
       <div class$="mdc-form-field ${alignEnd ? 'mdc-form-field--align-end' : ''}">
         <slot></slot>
         <label class="mdc-label" on-click="${_labelClickHandler}">${label}</label>
       </div>`;
   }
 
-  _didRender(props, changed) {
-    if ('label' in changed && this._input) {
+  update(changedProperties) {
+    super.update(changedProperties);
+    if (changedProperties.has('label') && this._input) {
       if (this._input.localName == 'input') {
         this._input.setAttribute('aria-label', props.label);
       } else {
@@ -71,7 +73,7 @@ export class Formfield extends ComponentElement {
     }
   }
 
-  _labelClickHandler(e) {
+  _labelClickHandler() {
     if (this._input) {
       this._input.focus();
       this._input.click();
@@ -80,7 +82,7 @@ export class Formfield extends ComponentElement {
 
   get _input() {
     return this.__input = this.__input ||
-      findAssignedNode(this._root.querySelector('slot'), '*');
+      findAssignedNode(this.shadowRoot.querySelector('slot'), '*');
   }
 }
 

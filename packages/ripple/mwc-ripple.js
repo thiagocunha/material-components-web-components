@@ -66,9 +66,9 @@ export class MDCWCRippleContainer extends MDCWCRipple {
 export class Ripple extends LitElement {
   static get properties() {
     return {
-      primary: Boolean,
-      accent: Boolean,
-      unbounded: Boolean,
+      primary: {type: Boolean},
+      accent: {type: Boolean},
+      unbounded: {type: Boolean},
     };
   }
 
@@ -79,25 +79,25 @@ export class Ripple extends LitElement {
     this.unbounded = false;
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
   // TODO(sorvell) #css: sizing.
-  _render({primary, accent, unbounded}) {
+  render() {
+    const {primary, accent, unbounded} = this;
     const classes = c$({
       'mdc-ripple-surface--primary': primary,
       'mdc-ripple-surface--accent': accent,
     });
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class$="mdc-ripple-surface ${classes}" data-mdc-ripple-is-unbounded?="${unbounded}"></div>`;
   }
 
-  async ready() {
-    super.ready();
+  async firstRendered() {
     await afterNextRender();
-    const surface = this._root.querySelector('.mdc-ripple-surface');
+    const surface = this.shadowRoot.querySelector('.mdc-ripple-surface');
     const container = this.parentNode || this;
     // TODO(sorvell) #css: this might be bad since the container might be positioned.
     container.style.position = 'relative';

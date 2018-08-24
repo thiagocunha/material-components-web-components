@@ -59,13 +59,13 @@ export class TabBarScroller extends LitElement {
     super();
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render() {
+  render() {
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class="mdc-tab-bar-scroller">
         <div class="mdc-tab-bar-scroller__indicator mdc-tab-bar-scroller__indicator--back">
           <a class="mdc-tab-bar-scroller__indicator__inner material-icons" href="#" aria-label="scroll back button">
@@ -83,8 +83,7 @@ export class TabBarScroller extends LitElement {
       </div>`;
   }
 
-  async ready() {
-    super.ready();
+  async firstRendered() {
     // TODO(sorvell): hack push scroller creation after tabbar... could expose promise.
     await afterNextRender();
     await afterNextRender();
@@ -93,7 +92,7 @@ export class TabBarScroller extends LitElement {
   }
 
   _makeComponent() {
-    const mdcRoot = this._root.querySelector('div');
+    const mdcRoot = this.shadowRoot.querySelector('div');
     mdcRoot._host = this;
     this._mdcComponent = new MDCWCTabBarScroller(mdcRoot);
   }

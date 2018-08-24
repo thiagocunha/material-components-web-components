@@ -21,9 +21,9 @@ import '@material/mwc-icon/mwc-icon-font.js';
 export class ListItem extends LitElement {
   static get properties() {
     return {
-      label: String,
-      icon: String,
-      disabled: Boolean,
+      label: {type: String},
+      icon: {type: String},
+      disabled: {type: Boolean},
     };
   }
 
@@ -34,15 +34,17 @@ export class ListItem extends LitElement {
     this.disabled = false;
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
   // TODO(sorvell) #css: add styling for disabled.
-  _render({label, icon, disabled}) {
-    renderAttributes(this, {'aria-disabled': disabled ? 'true' : null});
+  render() {
+    const {label, icon, disabled} = this;
+    // TODO(sorvell): needs replacement
+    //renderAttributes(this, {'aria-disabled': disabled ? 'true' : null});
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class="mdc-list-item" role="menuitem" tabindex="0" aria-disabled$="${disabled}">
         ${icon ? html`<span class="material-icons">${icon}</span>` : ''}
         ${label || ''}
@@ -50,9 +52,8 @@ export class ListItem extends LitElement {
       </div>`;
   }
 
-  ready() {
-    super.ready();
-    this._listItem = this._root.querySelector('.mdc-list-item');
+  firstRendered() {
+    this._listItem = this.shadowRoot.querySelector('.mdc-list-item');
   }
 
   get listItem() {

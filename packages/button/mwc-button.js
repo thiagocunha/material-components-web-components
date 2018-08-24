@@ -23,13 +23,13 @@ import '@material/mwc-icon/mwc-icon-font.js';
 export class Button extends LitElement {
   static get properties() {
     return {
-      raised: Boolean,
-      unelevated: Boolean,
-      outlined: Boolean,
-      dense: Boolean,
-      disabled: Boolean,
-      icon: String,
-      label: String,
+      raised: {type: Boolean},
+      unelevated: {type: Boolean},
+      outlined: {type: Boolean},
+      dense: {type: Boolean},
+      disabled: {type: Boolean},
+      icon: {type: String},
+      label: {type: String},
     };
   }
 
@@ -44,21 +44,21 @@ export class Button extends LitElement {
     this.label = '';
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({mode: 'open', delegatesFocus: true});
   }
 
-  async ready() {
-    super.ready();
+  async firstRendered() {
     await afterNextRender();
-    this._ripple = new MDCWCRipple(this._root.querySelector('.mdc-button'));
+    this._ripple = new MDCWCRipple(this.shadowRoot.querySelector('.mdc-button'));
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render({raised, unelevated, outlined, dense, disabled, icon, label}) {
+  render() {
+    const {raised, unelevated, outlined, dense, disabled, icon, label} = this;
     const hostClasses = c$({
       'mdc-button--raised': raised,
       'mdc-button--unelevated': unelevated,
@@ -66,7 +66,7 @@ export class Button extends LitElement {
       'mdc-button--dense': dense,
     });
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <button class$="mdc-button ${hostClasses}" disabled?="${disabled}">
         ${icon ? html`<span class="material-icons mdc-button__icon">${icon}</span>` : ''}
         ${label || ''}

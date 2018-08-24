@@ -39,7 +39,7 @@ export class ChipSet extends ComponentElement {
 
   static get properties() {
     return {
-      type: String,
+      type: {type: String},
     };
   }
 
@@ -49,23 +49,22 @@ export class ChipSet extends ComponentElement {
     this.type = '';
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render({type}) {
+  render() {
     const hostClasses = c$({
-      'mdc-chip-set--choice': type == 'choice',
-      'mdc-chip-set--filter': type == 'filter',
+      'mdc-chip-set--choice': this.type == 'choice',
+      'mdc-chip-set--filter': this.type == 'filter',
     });
     // TODO(sorvell) #css: added display
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class$="mdc-chip-set ${hostClasses}"><slot></slot></div>`;
   }
 
-  ready() {
-    super.ready();
+  firstRendered() {
     this._slot = this.shadowRoot.querySelector('slot');
   }
 

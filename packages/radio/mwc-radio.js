@@ -32,10 +32,10 @@ export class Radio extends FormableComponentElement {
 
   static get properties() {
     return {
-      checked: Boolean,
-      disabled: Boolean,
-      value: String,
-      name: String,
+      checked: {type: Boolean},
+      disabled: {type: Boolean},
+      value: {type: String},
+      name: {type: String},
     };
   }
 
@@ -62,13 +62,14 @@ export class Radio extends FormableComponentElement {
     this._selectionController.unregister(this);
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render({checked, value, name}) {
+  render() {
+    const {checked, value, name} = this;
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class="mdc-radio">
         <input class="mdc-radio__native-control" type="radio"
           checked="${checked}" name="${name}" value="${value}"

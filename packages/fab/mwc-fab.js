@@ -23,11 +23,11 @@ import '@material/mwc-icon/mwc-icon-font.js';
 export class Fab extends LitElement {
   static get properties() {
     return {
-      mini: Boolean,
-      exited: Boolean,
-      disabled: Boolean,
-      icon: String,
-      label: String,
+      mini: {type: Boolean},
+      exited: {type: Boolean},
+      disabled: {type: Boolean},
+      icon: {type: String},
+      label: {type: String},
     };
   }
 
@@ -39,27 +39,27 @@ export class Fab extends LitElement {
     this.label = '';
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({mode: 'open', delegatesFocus: true});
   }
 
-  async ready() {
-    super.ready();
+  async firstRendered() {
     await afterNextRender();
-    this._ripple = new MDCWCRipple(this._root.querySelector('.mdc-fab'));
+    this._ripple = new MDCWCRipple(this.shadowRoot.querySelector('.mdc-fab'));
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render({icon, mini, exited, disabled, label}) {
+  render() {
+    const {icon, mini, exited, disabled, label} = this;
     const hostClasses = c$({
       'mdc-fab--mini': mini,
       'mdc-fab--exited': exited,
     });
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <button class$="mdc-fab ${hostClasses}" disabled?="${disabled}" aria-label$="${label || icon}">
         ${icon ? html`<span class="material-icons mdc-fab__icon">${icon}</span>` : ''}
       </button>`;

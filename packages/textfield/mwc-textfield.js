@@ -36,18 +36,18 @@ export class Textfield extends ComponentElement {
 
   static get properties() {
     return {
-      value: String,
-      label: String,
-      icon: String,
-      iconTrailing: Boolean,
-      box: Boolean,
-      outlined: Boolean,
-      disabled: Boolean,
-      fullWidth: Boolean,
-      required: Boolean,
-      helperText: '',
-      placeHolder: '',
-      type: '',
+      value: {type: String},
+      label: {type: String},
+      icon: {type: String},
+      iconTrailing: {type: Boolean},
+      box: {type: Boolean},
+      outlined: {type: Boolean},
+      disabled: {type: Boolean},
+      fullWidth: {type: Boolean},
+      required: {type: Boolean},
+      helperText: {type: String},
+      placeHolder: {type: String},
+      type: {type: String}
     };
   }
 
@@ -68,12 +68,13 @@ export class Textfield extends ComponentElement {
     this.type = '';
   }
 
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
   // TODO(sorvell) #css: styling for fullwidth
-  _render({value, label, box, outlined, disabled, icon, iconTrailing, fullWidth, required, placeHolder, helperText, type}) {
+  render() {
+    const {value, label, box, outlined, disabled, icon, iconTrailing, fullWidth, required, placeHolder, helperText, type} = this;
     const hostClasses = c$({
       'mdc-text-field--with-leading-icon': icon && !iconTrailing,
       'mdc-text-field--with-trailing-icon': icon && iconTrailing,
@@ -83,7 +84,7 @@ export class Textfield extends ComponentElement {
       'mdc-text-field--fullwidth': fullWidth,
     });
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class$="mdc-text-field mdc-text-field--upgraded ${hostClasses}">
         ${!fullWidth && icon ? html`<i class="material-icons mdc-text-field__icon" tabindex="0">${icon}</i>` : ''}
         ${this._renderInput({value, required, type, placeHolder, label})}
@@ -101,9 +102,8 @@ export class Textfield extends ComponentElement {
     return html`<input type="text" type$="${type}" placeholder$="${placeHolder}" required?="${required}" class$="mdc-text-field__input ${value ? 'mdc-text-field--upgraded' : ''}" id="text-field" value="${value}" aria-label$="${label}">`;
   }
 
-  ready() {
-    super.ready();
-    this._input = this._root.querySelector('input');
+  firstRendered() {
+    this._input = this.shadowRoot.querySelector('input');
   }
 
   get valid() {

@@ -31,16 +31,16 @@ export class Checkbox extends FormableComponentElement {
 
   static get properties() {
     return {
-      checked: Boolean,
-      indeterminate: Boolean,
-      disabled: Boolean,
-      value: String,
+      checked: {type: Boolean},
+      indeterminate: {type: Boolean},
+      disabled: {type: Boolean},
+      value: {type: String},
     };
   }
 
   // TODO(sorvell): need to add delegatesFocus to ShadyDOM. Using it here,
   // allows tabIndex order to be changed (note, > 0 is dubious but -1 seems useful)
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({mode: 'open', delegatesFocus: true});
   }
 
@@ -55,13 +55,14 @@ export class Checkbox extends FormableComponentElement {
   }
 
   // TODO(sorvell) #css: add outline none to avoid focus decoration
-  _renderStyle() {
+  renderStyle() {
     return style;
   }
 
-  _render({checked, value}) {
+  render() {
+    const {checked, value} = this;
     return html`
-      ${this._renderStyle()}
+      ${this.renderStyle()}
       <div class="mdc-checkbox">
         <input type="checkbox"
           class="mdc-checkbox__native-control"
