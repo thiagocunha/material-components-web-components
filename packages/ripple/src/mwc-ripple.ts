@@ -52,16 +52,16 @@ export class Ripple extends LitElement {
   update(changedProperties: PropertyValues) {
     super.update(changedProperties);
     if (changedProperties.has('unbounded')) {
-      this._ripple.setUnbounded(this.unbounded);
+      this._ripple.unbounded = this.unbounded;
     }
   }
 
   firstRendered() {
-    this._root = this.shadowRoot!.querySelector('.mdc-ripple-surface');
-    this._ripple = attachRipple(this);
     const container = this.parentElement || this;
     // TODO(sorvell) #css: this might be bad since the container might be positioned.
     container.style.position = 'relative';
+    this._root = this.shadowRoot!.querySelector('.mdc-ripple-surface');
+    this._ripple = attachRipple(this, this._root, container);
   }
 
   activate() {

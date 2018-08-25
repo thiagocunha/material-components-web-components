@@ -37,21 +37,30 @@ export function attachRipple(instance: LitElement & RippleCapableComponent, ripp
 
   const adapter = {
     browserSupportsCssVars: () => supportsCssVariables,
-    isUnbounded: () => instance.unbounded === undefined ? true : instance.unbounded,
+    isUnbounded: () =>
+      instance.unbounded === undefined ? true : instance.unbounded,
     isSurfaceActive: () => interactionNode[MATCHES](':active'),
     isSurfaceDisabled: () => instance.disabled,
     addClass: (className: string) => rippleSurface.classList.add(className),
-    removeClass: (className: string) => rippleSurface.classList.remove(className),
+    removeClass: (className: string) =>
+      rippleSurface.classList.remove(className),
     containsEventTarget: (target: HTMLElement) => rootNode.contains(target),
-    registerInteractionHandler: (type: string, handler: Handler) => interactionNode.addEventListener(type, handler),
-    deregisterInteractionHandler: (type: string, handler: Handler) => interactionNode.removeEventListener(type, handler),
+    registerInteractionHandler: (type: string, handler: Handler) =>
+      interactionNode.addEventListener(type, handler, util.applyPassive()),
+    deregisterInteractionHandler: (type: string, handler: Handler) =>
+      interactionNode.removeEventListener(type, handler, util.applyPassive()),
     registerDocumentInteractionHandler: (evtType: string, handler: Handler) =>
-      document.documentElement.addEventListener(evtType, handler, util.applyPassive()),
+      document.documentElement.addEventListener(
+          evtType, handler, util.applyPassive()),
     deregisterDocumentInteractionHandler: (evtType: string, handler: Handler) =>
-      document.documentElement.removeEventListener(evtType, handler, util.applyPassive()),
-    registerResizeHandler: (handler: Handler) => window.addEventListener('resize', handler),
-    deregisterResizeHandler: (handler: Handler) => window.removeEventListener('resize', handler),
-    updateCssVariable: (varName: string, value: string) => rippleSurface.style.setProperty(varName, value),
+      document.documentElement.removeEventListener(
+          evtType, handler, util.applyPassive()),
+    registerResizeHandler: (handler: Handler) =>
+      window.addEventListener('resize', handler),
+    deregisterResizeHandler: (handler: Handler) =>
+      window.removeEventListener('resize', handler),
+    updateCssVariable: (varName: string, value: string) =>
+      rippleSurface.style.setProperty(varName, value),
     computeBoundingRect: () => rippleSurface.getBoundingClientRect(),
     getWindowPageOffset: () => ({x: window.pageXOffset, y: window.pageYOffset}),
   };
