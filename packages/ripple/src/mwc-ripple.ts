@@ -30,7 +30,7 @@ export class Ripple extends LitElement {
   unbounded = false;
 
   private _ripple: MDCRipple | null = null;
-  _root: HTMLElement;
+  _root: HTMLElement | null = null;
 
   renderStyle() {
     return style;

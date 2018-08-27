@@ -17,29 +17,25 @@ limitations under the License.
 import {LitElement} from '@polymer/lit-element/lit-element.js';
 
 export class FormElement extends LitElement {
+  protected _formElement: HTMLInputElement | null = null;
+
   static get formElementSelector() {
     return 'input';
   }
 
+  _root: HTMLElement | null = null;
 
   createRenderRoot() {
     return this.attachShadow({mode: 'open', delegatesFocus: true});
   }
 
   firstRendered() {
-    this._formElement = this.shadowRoot.querySelector((this.constructor as typeof FormableComponentElement).formElementSelector);
+    this._formElement = this.shadowRoot!.querySelector((this.constructor as typeof FormElement).formElementSelector);
   }
 
   click() {
     if (this._formElement) {
       this._formElement.click();
-    }
-  }
-
-  // TODO(srovell): use delegates focus?
-  focus() {
-    if (this._formElement) {
-      this._formElement.focus();
     }
   }
 

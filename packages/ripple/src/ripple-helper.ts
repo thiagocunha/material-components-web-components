@@ -39,16 +39,16 @@ export function attachRipple(instance: LitElement & RippleCapableComponent, ripp
     browserSupportsCssVars: () => supportsCssVariables,
     isUnbounded: () =>
       instance.unbounded === undefined ? true : instance.unbounded,
-    isSurfaceActive: () => interactionNode[MATCHES](':active'),
+    isSurfaceActive: () => interactionNode![MATCHES](':active'),
     isSurfaceDisabled: () => instance.disabled,
-    addClass: (className: string) => rippleSurface.classList.add(className),
+    addClass: (className: string) => rippleSurface!.classList.add(className),
     removeClass: (className: string) =>
-      rippleSurface.classList.remove(className),
+      rippleSurface!.classList.remove(className),
     containsEventTarget: (target: HTMLElement) => rootNode.contains(target),
     registerInteractionHandler: (type: string, handler: Handler) =>
-      interactionNode.addEventListener(type, handler, util.applyPassive()),
+      interactionNode!.addEventListener(type, handler, util.applyPassive()),
     deregisterInteractionHandler: (type: string, handler: Handler) =>
-      interactionNode.removeEventListener(type, handler, util.applyPassive()),
+      interactionNode!.removeEventListener(type, handler, util.applyPassive()),
     registerDocumentInteractionHandler: (evtType: string, handler: Handler) =>
       document.documentElement.addEventListener(
           evtType, handler, util.applyPassive()),
@@ -60,8 +60,8 @@ export function attachRipple(instance: LitElement & RippleCapableComponent, ripp
     deregisterResizeHandler: (handler: Handler) =>
       window.removeEventListener('resize', handler),
     updateCssVariable: (varName: string, value: string) =>
-      rippleSurface.style.setProperty(varName, value),
-    computeBoundingRect: () => rippleSurface.getBoundingClientRect(),
+      rippleSurface!.style.setProperty(varName, value),
+    computeBoundingRect: () => rippleSurface!.getBoundingClientRect(),
     getWindowPageOffset: () => ({x: window.pageXOffset, y: window.pageYOffset}),
   };
   const foundation = new MDCRippleFoundation(adapter);

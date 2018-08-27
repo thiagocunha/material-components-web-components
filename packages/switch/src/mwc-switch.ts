@@ -14,12 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
+import {html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
+import {FormElement} from '@material/mwc-base/form-element.js';
 import MDCSwitchFoundation from '@material/switch/foundation.js';
 import {style} from './mwc-switch-css.js';
 import {attachRipple} from '@material/mwc-ripple/ripple-helper.js';
 
-export class Switch extends LitElement {
+export class Switch extends FormElement {
   @property({type: Boolean})
   checked = false;
 
@@ -27,8 +28,11 @@ export class Switch extends LitElement {
   disabled = false;
 
   _root: HTMLElement | null = null;
-  private _input: HTMLInputElement | null = null;
   private _foundation: MDCSwitchFoundation | null = null;
+
+  static get formElementSelector() {
+    return MDCSwitchFoundation.strings.NATIVE_CONTROL_SELECTOR;
+  }
 
   renderStyle() {
     return style;
@@ -41,7 +45,7 @@ export class Switch extends LitElement {
   private _initRipple() {
     const {RIPPLE_SURFACE_SELECTOR} = MDCSwitchFoundation.strings;
     const rippleSurface: HTMLElement = this.shadowRoot!.querySelector(RIPPLE_SURFACE_SELECTOR);
-    return attachRipple(this, rippleSurface, this._input!);
+    return attachRipple(this, rippleSurface, this._formElement);
   }
 
   render() {
@@ -70,23 +74,15 @@ export class Switch extends LitElement {
   }
 
   firstRendered() {
-    this._input = this.shadowRoot!.querySelector(MDCSwitchFoundation.strings.NATIVE_CONTROL_SELECTOR);
+    super.firstRendered();
     this._root = this.shadowRoot!.querySelector('.mdc-switch');
     this._foundation = new MDCSwitchFoundation({
       addClass: (className: string) => {this._root!.classList.add(className)},
       removeClass: (className: string) => {this._root!.classList.remove(className)},
-      setNativeControlChecked: (checked: boolean) => {this._input!.checked = checked},
-      setNativeControlDisabled: (disabled: boolean) => {this._input!.disabled = disabled}
+      setNativeControlChecked: (checked: boolean) => {this._formElement!.checked = checked},
+      setNativeControlDisabled: (disabled: boolean) => {this._formElement!.disabled = disabled}
     });
     this._initRipple();
-  }
-
-  click() {
-    this._input!.click();
-  }
-
-  focus() {
-    this._input!.focus();
   }
 }
 
