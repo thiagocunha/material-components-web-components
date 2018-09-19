@@ -14,34 +14,96 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
-import {MDCPersistentDrawerFoundation, MDCTemporaryDrawerFoundation, util} from '@material/drawer';
+import {LitElement, html, property, query, customElement} from '@polymer/lit-element/lit-element.js';
+import {classMap} from 'lit-html/directives/classMap.js';
+import {observer} from '@material/mwc-base/decorators.js';
+import {MDCModalDrawerFoundation, MDCDismissibleDrawerFoundation, strings, util, createFocusTrap} from '@material/drawer';
 import {style} from './mwc-drawer-css.js';
 
-const kindToFoundation = {
-  temporary: MDCTemporaryDrawerFoundation,
-  persistent: MDCPersistentDrawerFoundation
+declare global {
+  interface HTMLElementTagNameMap {
+    'mwc-drawer': Drawer;
+  }
 }
 
-function foundationForKind(kind) {
-  return kindToFoundation[kind] || kindToFoundation.temporary;
-}
-
+@customElement('mwc-drawer')
 export class Drawer extends LitElement {
 
-  @property({type: String})
-  kind: 'temporary';
+  @query('.mdc-drawer')
+  private _root: HTMLElement|null;
+
+  private _foundation: MDCDismissibleDrawerFoundation | MDCModalDrawerFoundation | null = null;
+
+  private _focusTrap = undefined;
+  private _previousFocus: HTMLElement|undefined = undefined;
+
+  @observer(function(this: Drawer, value: string) {
+    const Foundation = value ? MDCModalDrawerFoundation : MDCDismissibleDrawerFoundation;
+    if (this._foundation) {
+      this._foundation.destroy();
+    }
+    const adapter = {
+      addClass: (className) => this._root.classList.add(className),
+      removeClass: (className) => this._root.classList.remove(className),
+      hasClass: (className) => this._root.classList.contains(className),
+      elementHasClass: (element, className) => element.classList.contains(className),
+      computeBoundingRect: () => this._root.getBoundingClientRect(),
+      saveFocus: () => {
+        this._previousFocus = document.activeElement as HTMLElement;
+      },
+      restoreFocus: () => {
+        const previousFocus = this._previousFocus && this._previousFocus.focus;
+        if (this._root.contains(document.activeElement) && previousFocus) {
+          this._previousFocus.focus();
+        }
+      },
+      // TODO(sorvell): List integration like this may not work. Need to understand
+      // why this is here.
+      focusActiveNavigationItem: () => {
+        // const activeNavItemEl = this._root.querySelector(`.${MDCListFoundation.cssClasses.LIST_ITEM_ACTIVATED_CLASS}`)!;
+        // if (activeNavItemEl) {
+        //   (activeNavItemEl as HTMLElement).focus();
+        // }
+      },
+      notifyClose: () => this.dispatchEvent(new Event(strings.CLOSE_EVENT, {bubbles: true, cancelable: true})),
+      notifyOpen: () => this.dispatchEvent(new Event(strings.OPEN_EVENT, {bubbles: true, cancelable: true})),
+      trapFocus: () => this._focusTrap.activate(),
+      releaseFocus: () => this._focusTrap.deactivate(),
+    };
+    this._foundation = new Foundation(adapter);
+    this._foundation.init();
+  })
 
   @property({type: Boolean})
-  opened = false;
+  set open(value) {
+    // this._open = value;
+    // this.requestUpdate({open: this.open});
+    this.updateComplete.then(() => {
+      if (value) {
+        this._foundation.open();
+      } else {
+        this._foundation.close();
+      }
+    });
+  }
+
+  get open() {
+    return this._foundation.isOpen();
+  }
 
   @property({type: Boolean})
   hasHeader = false;
 
-  private _root: HTMLElement|undefined;
-  private _drawer: HTMLElement|undefined;
+  @property({type: Boolean})
+  dismissable = false;
 
-  private _foundation: MDCPersistentDrawerFoundation | MDCTemporaryDrawerFoundation | null = null;
+  @property({type: Boolean})
+  modal = false;
+
+  constructor() {
+    super();
+    this.open = false;
+  }
 
   renderStyle() {
     return style;
@@ -50,83 +112,27 @@ export class Drawer extends LitElement {
   render() {
     return html`
       ${this.renderStyle()}
-      <aside class="mdc-drawer mdc-drawer--${this.kind} mdc-typography">
-        <nav class="mdc-drawer__drawer">
-          ${this.hasHeader && html`<header class="mdc-drawer__header">
-            <div class="mdc-drawer__header-content">
-              <slot name="header"><slot>
-            </div>
-          </header>`}
-          <nav class="mdc-drawer__content">
-            <slot name="content"></slot>
-          </nav>
-        </nav>
+      <aside class="mdc-drawer
+          ${classMap({'mdc-drawer--dismissable': this.dismissable, 'mdc-drawer--modal': this.modal})}">
+        ${this.hasHeader ? html`
+        <div class="mdc-drawer__header">
+          <h3 class="mdc-drawer__title"><slot name="title"></slot></h3>
+          <h6 class="mdc-drawer__subtitle"><slot name="subtitle"></slot></h6>
+          <slot name="header"></slot>
+        </div>
+        ` : ''}
+        <div class="mdc-drawer__content">
+          <slot></slot>
+        </div>
       </aside>
+      ${this.modal ? html`<div class="mdc-drawer-scrim" @click="${() => this._foundation.handleScrimClick()}"></div>` : ''}
       `;
   }
 
-  firstRendered() {
-    this._root = this.shadowRoot.querySelector('aside');
-    this._drawer = this.shadowRoot.querySelector('mdc-drawer__drawer');
-  }
-
-  update(changedProperties: PropertyValues) {
-    super.update(changedProperties);
-    if (changedProperties.has('kind')) {
-      if (this._foundation) {
-        this._foundation.destroy();
-      }
-      const Foundation = foundationForKind(this.kind);
-      const adapter = {
-        addClass: (className) => this._root.classList.add(className),
-        removeClass: (className) => this._root.classList.remove(className),
-        hasClass: (className) => this._root.classList.contains(className),
-        hasNecessaryDom: true,
-        registerInteractionHandler: (evt, handler) =>
-          this._root.addEventListener(util.remapEvent(evt), handler, util.applyPassive()),
-        deregisterInteractionHandler: (evt, handler) =>
-          this._root.removeEventListener(util.remapEvent(evt), handler, util.applyPassive()),
-        registerDrawerInteractionHandler: (evt, handler) =>
-          this._drawer.addEventListener(util.remapEvent(evt), handler),
-        deregisterDrawerInteractionHandler: (evt, handler) =>
-          this._drawer.removeEventListener(util.remapEvent(evt), handler),
-        registerDocumentKeydownHandler: (handler) => document.addEventListener('keydown', handler),
-        deregisterDocumentKeydownHandler: (handler) => document.removeEventListener('keydown', handler),
-        getDrawerWidth: () => this._drawer.offsetWidth,
-        setTranslateX: (value) => this._drawer.style.setProperty(
-          util.getTransformPropertyName(), value === null ? null : `translateX(${value}px)`),
-        updateCssVariable: (value) => {
-          if (util.supportsCssCustomProperties()) {
-            this._root.style.setProperty(OPACITY_VAR_NAME, value);
-          }
-        },
-        getFocusableElements: () => this.querySelectorAll(FOCUSABLE_ELEMENTS),
-        saveElementTabState: (el) => util.saveElementTabState(el),
-        restoreElementTabState: (el) => util.restoreElementTabState(el),
-        makeElementUntabbable: (el) => el.setAttribute('tabindex', -1),
-        isRtl: () => getComputedStyle(this._root).getPropertyValue('direction') === 'rtl',
-        isDrawer: (el) => el === this._drawer,
-        notifyOpen: () => this.emit(MDCPersistentDrawerFoundation.strings.OPEN_EVENT),
-        notifyClose: () => this.emit(MDCPersistentDrawerFoundation.strings.CLOSE_EVENT),
-      };
-      if (this.kind === 'temporary') {
-        Object.assign(adapter, {
-          addBodyClass: (className) => document.body.classList.add(className),
-          removeBodyClass: (className) => document.body.classList.remove(className),
-          eventTargetHasClass: (target, className) => target.classList.contains(className),
-          registerTransitionEndHandler: (handler) => this._drawer.addEventListener('transitionend', handler),
-          deregisterTransitionEndHandler: (handler) => this._drawer.removeEventListener('transitionend', handler),
-          notifyOpen: () => this.emit(MDCTemporaryDrawerFoundation.strings.OPEN_EVENT),
-          notifyClose: () => this.emit(MDCTemporaryDrawerFoundation.strings.CLOSE_EVENT),
-        });
-      }
-      this._foundation = new Foundation({this._root, adapter});
-    }
-    if (changedProperties.has('opened')) {
-      this._foundation.setOpen(this.opened);
-    }
+  firstUpdated() {
+    this._root.addEventListener('keydown', (e) => this._foundation.handleKeydown(e));
+    this._root.addEventListener('transitionend', (e) => this._foundation.handleTransitionEnd(e));
+    this._focusTrap = util.createFocusTrapInstance(this._root, createFocusTrap);
   }
 
 }
-
-customElements.define('mwc-drawer', Drawer);
