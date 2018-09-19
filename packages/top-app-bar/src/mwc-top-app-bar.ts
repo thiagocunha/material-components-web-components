@@ -57,6 +57,9 @@ export class TopAppBar extends LitElement {
     return style;
   }
 
+  // TODO(sorvell): MDC decorates the navigation icon and action items with
+  // ripples. Since these are slotted items here, the assumption is that the
+  // user brings a web component with a ripple if rippling is desired.
   render() {
     const classes = {
       'mdc-top-app-bar--fixed': this.fixed,
