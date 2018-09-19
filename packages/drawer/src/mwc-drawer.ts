@@ -26,7 +26,7 @@ declare global {
   }
 }
 
-@customElement('mwc-drawer')
+@customElement('mwc-drawer' as any)
 export class Drawer extends LitElement {
 
   @query('.mdc-drawer')

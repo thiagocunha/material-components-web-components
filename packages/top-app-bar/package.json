@@ -1,8 +1,8 @@
 {
-  "name": "@material/mwc-drawer",
+  "name": "@material/mwc-top-app-bar",
   "version": "0.1.2",
   "description": "",
-  "main": "mwc-drawer.js",
+  "main": "mwc-top-app-bar.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/material-components/material-components-web-components.git"

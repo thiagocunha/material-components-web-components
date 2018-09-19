@@ -25,7 +25,7 @@ declare global {
   }
 }
 
-@customElement('mwc-top-app-bar')
+@customElement('mwc-top-app-bar' as any)
 export class TopAppBar extends LitElement {
 
   private _foundation: MDCShortTopAppBarFoundation|MDCFixedTopAppBarFoundation|MDCTopAppBarFoundation|undefined;
