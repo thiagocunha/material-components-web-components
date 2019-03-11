@@ -12,9 +12,13 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
+/**
+ * @module lit-html
+ */
+
 import {reparentNodes} from './dom.js';
 import {TemplateProcessor} from './template-processor.js';
-import {lastAttributeNameRegex, marker, nodeMarker, rewritesStyleAttribute} from './template.js';
+import {boundAttributeSuffix, lastAttributeNameRegex, marker, nodeMarker} from './template.js';
 
 /**
  * The return type of `html`, which holds a Template and the values from
@@ -22,12 +26,12 @@ import {lastAttributeNameRegex, marker, nodeMarker, rewritesStyleAttribute} from
  */
 export class TemplateResult {
   strings: TemplateStringsArray;
-  values: any[];
+  values: unknown[];
   type: string;
   processor: TemplateProcessor;
 
   constructor(
-      strings: TemplateStringsArray, values: any[], type: string,
+      strings: TemplateStringsArray, values: unknown[], type: string,
       processor: TemplateProcessor) {
     this.strings = strings;
     this.values = values;
@@ -39,32 +43,33 @@ export class TemplateResult {
    * Returns a string of HTML used to create a `<template>` element.
    */
   getHTML(): string {
-    const l = this.strings.length - 1;
+    const endIndex = this.strings.length - 1;
     let html = '';
-    let isTextBinding = true;
-    for (let i = 0; i < l; i++) {
+    for (let i = 0; i < endIndex; i++) {
       const s = this.strings[i];
-      html += s;
-      const close = s.lastIndexOf('>');
-      // We're in a text position if the previous string closed its last tag, an
-      // attribute position if the string opened an unclosed tag, and unchanged
-      // if the string had no brackets at all:
-      //
-      // "...>...": text position. open === -1, close > -1
-      // "...<...": attribute position. open > -1
-      // "...": no change. open === -1, close === -1
-      isTextBinding =
-          (close > -1 || isTextBinding) && s.indexOf('<', close + 1) === -1;
-
-      if (!isTextBinding && rewritesStyleAttribute) {
-        html = html.replace(lastAttributeNameRegex, (match, p1, p2, p3) => {
-          return (p2 === 'style') ? `${p1}style$${p3}` : match;
-        });
+      // This exec() call does two things:
+      // 1) Appends a suffix to the bound attribute name to opt out of special
+      // attribute value parsing that IE11 and Edge do, like for style and
+      // many SVG attributes. The Template class also appends the same suffix
+      // when looking up attributes to create Parts.
+      // 2) Adds an unquoted-attribute-safe marker for the first expression in
+      // an attribute. Subsequent attribute expressions will use node markers,
+      // and this is safe since attributes with multiple expressions are
+      // guaranteed to be quoted.
+      const match = lastAttributeNameRegex.exec(s);
+      if (match) {
+        // We're starting a new bound attribute.
+        // Add the safe attribute suffix, and use unquoted-attribute-safe
+        // marker.
+        html += s.substr(0, match.index) + match[1] + match[2] +
+            boundAttributeSuffix + match[3] + marker;
+      } else {
+        // We're either in a bound node, or trailing bound attribute.
+        // Either way, nodeMarker is safe to use.
+        html += s + nodeMarker;
       }
-      html += isTextBinding ? nodeMarker : marker;
     }
-    html += this.strings[l];
-    return html;
+    return html + this.strings[endIndex];
   }
 
   getTemplateElement(): HTMLTemplateElement {
