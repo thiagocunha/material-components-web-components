@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, customElement} from '@material/mwc-base/base-element';
+import {LitElement, html, property, classMap, customElement} from '@material/mwc-base/base-element';
 import {style} from './mwc-icon-host-css.js';
 import './mwc-icon-font.js';
 
@@ -23,8 +23,20 @@ export class Icon extends LitElement {
 
   static styles = style;
 
+  @property()
+  theme = '';
+
   render() {
-    return html`<slot></slot>`;
+    const classes = {
+      'mwc-icon__outlined': this.theme === 'outlined',
+      'mwc-icon__round': this.theme === 'round',
+      'mwc-icon__two_tone': this.theme === 'two tone',
+      'mwc-icon__sharp': this.theme === 'sharp',
+    };
+    return html`<i
+        class="${classMap(classes)}">
+      <slot></slot>
+    </i>`;
   }
 
 }

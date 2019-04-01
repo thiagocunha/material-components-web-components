@@ -16,6 +16,19 @@ limitations under the License.
 */
 @import "./_mwc-icon.scss";
 
-:host {
+i {
   @extend %material-icons;
+}
+
+.mwc-icon__outlined {
+  --mdc-icon-font: "Material Icons Outlined";
+}
+.mwc-icon__round {
+  --mdc-icon-font: "Material Icons Round";
+}
+.mwc-icon__two_tone {
+  --mdc-icon-font: "Material Icons Two Tone";
+}
+.mwc-icon__sharp {
+  --mdc-icon-font: "Material Icons Sharp";
 }
