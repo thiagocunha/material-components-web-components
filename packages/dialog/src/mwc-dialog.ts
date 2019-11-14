@@ -1,6 +1,6 @@
 /**
 @license
-Copyright 2018 Google Inc. All Rights Reserved.
+Copyright 2019 Google Inc. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+import {customElement} from 'lit-element';
 
-// load material icons font
-const fontEl = document.createElement('link');
-fontEl.rel = 'stylesheet';
-fontEl.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-document.head!.appendChild(fontEl);
+import {DialogBase} from './mwc-dialog-base.js';
+import {style} from './mwc-dialog-css.js';
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'mwc-dialog': Dialog;
+  }
+}
+
+@customElement('mwc-dialog')
+export class Dialog extends DialogBase {
+  static styles = style;
+}
