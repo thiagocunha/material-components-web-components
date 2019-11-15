@@ -22,11 +22,11 @@ jobs:
       run: npm ci
 
     - name: build styles and components
-      if: ${{ matrix.os }} != 'windows-latest'
+      if: matrix.os != 'windows-latest'
       run: npm run build
 
     - name: build styles and components (windows)
-      if: ${{ matrix.os }} == 'windows-latest'
+      if: matrix.os == 'windows-latest'
       run: npm run build:windows
 
     # - name: check if formatted
