@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, maxOS-latest, windows-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v1
@@ -22,13 +22,13 @@ jobs:
 
     - name: check if formatted
       run: npm run format && git diff --exit-code || (echo -e '\n\033[31mERROR:\033[0mProject is not formatted. Please run "npm run format".' && false)
-    
+
     - name: check lint
       run: npm run lint
-    
+
     - name: build tests
       run: npm run buid:tests
-    
+
     - name: run tests on ${{ matrix.os }}
       run: npm test
       env:
