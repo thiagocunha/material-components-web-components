@@ -40,5 +40,6 @@ jobs:
 
     - name: run tests
       run: npm test
+      timeout-minutes: 5
       env:
         GITHUB_CI_OS: ${{ matrix.os }}
