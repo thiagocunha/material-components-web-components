@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+const GITHUB_CI_OS = process.env.GITHUB_CI_OS;
+const USING_GITHUB_CI = Boolean(GITHUB_CI_OS);
 const USING_TRAVISCI = Boolean(process.env.TRAVIS);
 const USING_SL = USING_TRAVISCI && Boolean(process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY);
 
@@ -75,6 +77,14 @@ const HEADLESS_LAUNCHERS = {
   },
 };
 
+const UBUNTU_LAUNCHERS = HEADLESS_LAUNCHERS;
+const MAC_LAUNCHERS = [];
+const WINDOWS_LAUNCHERS = [];
+
+const UBUNTU_BROWSERS = ['ChromeHeadlessNoSandbox', 'FirefoxHeadless'];
+const MAC_BROWSERS = ['Safari'];
+const WINDOWS_BROWSERS = ['Edge', 'IE'];
+
 module.exports = function(config) {
   const packages = config.packages ? config.packages.split(',') : [];
   const fileEntries = [];
@@ -108,7 +118,7 @@ module.exports = function(config) {
     browserNoActivityTimeout: 360000,
     captureTimeout: 420000,
     concurrency: USING_SL ? 10 : 1,
-    customLaunchers: {...SL_LAUNCHERS, ...HEADLESS_LAUNCHERS},
+    customLaunchers: determineLaunchers(),
 
     client: {
       mocha: {
@@ -138,7 +148,31 @@ module.exports = function(config) {
   }
 };
 
+function determineLaunchers() {
+  if (USING_GITHUB_CI) {
+    return {...UBUNTU_LAUNCHERS, ...MAC_LAUNCHERS, ...WINDOWS_LAUNCHERS};
+  }
+
+  return {...SL_LAUNCHERS, ...HEADLESS_LAUNCHERS};
+}
+
 function determineBrowsers() {
+  if (USING_GITHUB_CI) {
+    if (GITHUB_CI_OS === 'ubuntu-latest') {
+      return UBUNTU_BROWSERS;
+    }
+
+    if (GITHUB_CI_OS === 'macOS-latest') {
+      return MAC_BROWSERS;
+    }
+
+    if (GITHUB_CI_OS === 'windows-latest') {
+      return WINDOWS_BROWSERS;
+    }
+
+    return [];
+  }
+
   if (!USING_TRAVISCI) {
     return ['Chrome', 'Firefox'];
   }
