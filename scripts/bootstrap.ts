@@ -45,6 +45,7 @@ fs.readdirSync(path.join('packages'), {withFileTypes: true})
     const localPackageLocation = path.join(__dirname, '..', '..', 'packages', name);
 
     try {
+      console.log(localPackageLocation, nodeModulesLocation);
       fs.symlinkSync(localPackageLocation, nodeModulesLocation, 'dir');
     } catch (e) {
       console.warn(e);
