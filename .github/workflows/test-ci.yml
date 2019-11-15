@@ -1,4 +1,4 @@
-name: Node CI
+name: Test Push
 
 on: [push]
 
@@ -29,7 +29,7 @@ jobs:
     - name: build tests
       run: npm run buid:tests
 
-    - name: run tests on ${{ matrix.os }}
+    - name: run tests
       run: npm test
       env:
         GITHUB_CI_OS: ${{ matrix.os }}
