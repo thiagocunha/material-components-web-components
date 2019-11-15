@@ -9,8 +9,8 @@ jobs:
 
     strategy:
       matrix:
-        # os: [ubuntu-latest, macOS-latest, windows-latest]
-        os: [windows-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        # os: [windows-latest]
 
     steps:
     - uses: actions/checkout@v1
@@ -22,7 +22,11 @@ jobs:
       run: npm ci
 
     - name: build styles and components
+      if: ${{ matrix.os }} != 'windows-latest'
       run: npm run build
+
+    - name: build styles and components (windows)
+      run: npm run build:windows
 
     # - name: check if formatted
     #   run: npm run format && git diff --exit-code || (echo -e '\n\033[31mERROR:\033[0mProject is not formatted. Please run "npm run format".' && false)
